@@ -6,12 +6,14 @@ package com.gaoxi.redis.service;
  * @description
  */
 import java.io.Serializable;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import com.alibaba.dubbo.config.annotation.Service;
 import com.gaoxi.facade.redis.RedisService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 
@@ -123,5 +125,23 @@ public class RedisServiceImpl implements RedisService {
             e.printStackTrace();
         }
         return result;
+    }
+
+    @Override
+    public <K,HK,HV> boolean setMap(K key, Map<HK, HV> map, Long expireTime) {
+        HashOperations<K, HK, HV> operations = redisTemplate.opsForHash();
+        operations.putAll(key, map);
+
+        if (expireTime != null) {
+            redisTemplate.expire(key, expireTime, TimeUnit.SECONDS);
+        }
+        return false;
+    }
+
+
+    @Override
+    public <K,HK,HV> Map<HK,HV> getMap(final K key) {
+        HashOperations<K, HK, HV> operations = redisTemplate.opsForHash();
+        return operations.entries(key);
     }
 }

@@ -40,7 +40,7 @@ public interface RedisService {
      * @param key
      * @return
      */
-    public Serializable get(final String key);
+    public Object get(final String key);
 
     /**
      * 添加key-value（使用默认失效时间）
@@ -48,7 +48,7 @@ public interface RedisService {
      * @param value
      * @return
      */
-    public boolean set(final String key, Serializable value);
+    public boolean set(final String key, Object value);
 
     /**
      * 添加key-value（指定失效时间）
@@ -57,7 +57,7 @@ public interface RedisService {
      * @param expireTime 失效时间（单位秒）
      * @return
      */
-    public boolean set(final String key, Serializable value, Long expireTime);
+    public boolean set(final String key, Object value, Long expireTime);
 
     /**
      * 存储map

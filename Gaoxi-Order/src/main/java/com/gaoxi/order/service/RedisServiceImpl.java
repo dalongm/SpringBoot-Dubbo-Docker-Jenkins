@@ -5,6 +5,10 @@ package com.gaoxi.order.service;
  * @date 2017/11/1 下午3:15
  * @description
  */
+import java.io.Serializable;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import com.alibaba.dubbo.config.annotation.Service;
 import com.gaoxi.facade.redis.RedisService;
@@ -12,11 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
-
-import java.io.Serializable;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 @org.springframework.stereotype.Service
 @Service(version = "1.0.0")
@@ -80,9 +79,9 @@ public class RedisServiceImpl implements RedisService {
      * @return
      */
     @Override
-    public Serializable get(final String key) {
-        Serializable result = null;
-        ValueOperations<Serializable, Serializable> operations = redisTemplate.opsForValue();
+    public Object get(final String key) {
+        Object result = null;
+        ValueOperations<Serializable, Object> operations = redisTemplate.opsForValue();
         result = operations.get(key);
         return result;
     }
@@ -95,10 +94,10 @@ public class RedisServiceImpl implements RedisService {
      * @return
      */
     @Override
-    public boolean set(final String key, Serializable value) {
+    public boolean set(final String key, Object value) {
         boolean result = false;
         try {
-            ValueOperations<Serializable, Serializable> operations = redisTemplate.opsForValue();
+            ValueOperations<Serializable, Object> operations = redisTemplate.opsForValue();
             operations.set(key, value);
             result = true;
         } catch (Exception e) {
@@ -115,10 +114,10 @@ public class RedisServiceImpl implements RedisService {
      * @return
      */
     @Override
-    public boolean set(final String key, Serializable value, Long expireTime) {
+    public boolean set(final String key, Object value, Long expireTime) {
         boolean result = false;
         try {
-            ValueOperations<Serializable, Serializable> operations = redisTemplate.opsForValue();
+            ValueOperations<Serializable, Object> operations = redisTemplate.opsForValue();
             operations.set(key, value);
             redisTemplate.expire(key, expireTime, TimeUnit.SECONDS);
             result = true;
