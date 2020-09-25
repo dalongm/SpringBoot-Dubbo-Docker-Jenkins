@@ -134,7 +134,7 @@ Dubbo是一套微服务系统的协调者，在它这套体系中，一共有三
 ![title](https://leanote.com/api/file/getImage?fileId=5a1cbeb6ab64416ff300103e)
 
 - 设置groupId、artifactId、version
-```
+```xml
 <groupId>com.gaoxi</groupId>
 <artifactId>gaoxi</artifactId>
 <version>0.0.1-SNAPSHOT</version>
@@ -162,7 +162,7 @@ Gaoxi-User、Gaoxi-Analysis、Gaoxi-Product、Gaoxi-Order这四个系统相当�
 
 - 首先将Common-Service-Facade的打包方式设成jar<br>
 当打包这个模块的时候，Maven会将它打包成jar，并安装在本地仓库中。这样其他模块打包的时候就可以引用这个jar。
-```
+```xml
 <groupId>com.gaoxi</groupId>
 <artifactId>gaoxi-common-service-facade</artifactId>
 <version>0.0.1</version>
@@ -171,7 +171,7 @@ Gaoxi-User、Gaoxi-Analysis、Gaoxi-Product、Gaoxi-Order这四个系统相当�
 
 - 将其他模块的打包方式设为war<br>
 除了Gaoxi-Common-Service-Facade外，其他模块都是一个个可独立运行的子系统，需要在web容器中运行，所以我们需要将这些模块的打包方式设成war
-```
+```xml
 <groupId>com.gaoxi</groupId>
 <artifactId>gaoxi-user</artifactId>
 <version>0.0.1-SNAPSHOT</version>
@@ -181,7 +181,7 @@ Gaoxi-User、Gaoxi-Analysis、Gaoxi-Product、Gaoxi-Order这四个系统相当�
 
 - 在总pom中指定子模块<br>
 modules标签指定了当前模块的子模块是谁，但是仅在父模块的pom文件中指定子模块还不够，还需要在子模块的pom文件中指定父模块是谁。
-```
+```xml
 <modules>
 	<module>Gaoxi-Analysis</module>
 	<module>Gaoxi-Order</module>
@@ -194,7 +194,7 @@ modules标签指定了当前模块的子模块是谁，但是仅在父模块的p
 ```
 
 - 在子模块中指定父模块
-```
+```xml
 <parent>
 	<groupId>com.gaoxi</groupId>
 	<artifactId>gaoxi</artifactId>
@@ -206,7 +206,7 @@ modules标签指定了当前模块的子模块是谁，但是仅在父模块的p
 > 到此为止，模块的依赖关系配置完毕！但要注意模块打包的顺序。由于所有模块都依赖于Gaoxi-Common-Servie-Facade模块，因此在构建模块时，首先需要编译、打包、安装Gaoxi-Common-Servie-Facade，将它打包进本地仓库中，这样上层模块才能引用到。当该模块安装完毕后，再构建上层模块。否则在构建上层模块的时候会出现找不到Gaoxi-Common-Servie-Facade中类库的问题。
 
 ### 3.4 在父模块的pom中添加所有子模块公用的依赖
-```
+```xml
 <dependencies>
     <!-- Spring Boot -->
 	<dependency>
@@ -271,7 +271,7 @@ modules标签指定了当前模块的子模块是谁，但是仅在父模块的p
 ```
 
 当父模块的pom中配置了公用依赖后，子模块的pom文件将非常简洁，如下所示：
-```
+```xml
 <groupId>com.gaoxi</groupId>
 <artifactId>gaoxi-user</artifactId>
 <version>0.0.1-SNAPSHOT</version>
@@ -304,7 +304,7 @@ https://www.docker.com/
 > 注意点：推荐使用我的Tomcat镜像资源chaimm/tomcat，因为这个镜像中除了配置Tomcat的安装环境以外，还有一些本项目中要用到的Jenkins相关的配置。
 
 采用如下命令从Docker Hub上拉取镜像：
-```
+```bash
 docker pull chaimm/tomcat:1.1
 ```
 简单解释下，docker pull是从从Docker Hub上拉取镜像的命令，后面的chaimm/tomcat是镜像的名称，:1.1是镜像的版本号。目前这个镜像的最新版本号是1.1，推荐大家拉取这个。
@@ -323,7 +323,7 @@ docker pull chaimm/tomcat:1.1
 - gaoxi-redis
 
 以创建gaoxi-user容器为例，采用如下命令创建容器：
-```
+```bash
 docker run --name gaoxi-user-1 -p 8082:8080 -v /usr/web/gaoxi-log:/opt/tomcat/gaoxi-log chaimm/tomcat:1.1
 ```
 - --name：指定容器的名字
@@ -347,13 +347,13 @@ Dubbo一共定义了三种角色，分别是：服务提供者、服务消费者
 在Dubbo中，注册中心有多种选择，Dubbo最为推荐的即为ZooKeeper，本文采用ZooKeepeer作为Dubbo的注册中心。
 
 创建ZooKeeper容器也较为简单，大家可以直接使用我创建的ZooKeeper镜像，通过如下命令即可下载镜像：
-```
+```bash
 docker pull chaimm/zookeeper-dubbo:1.0
 ```
 该镜像中不仅运行了一个zookeeper，还运行了一个拥有dubbo-admin项目的tomcat。dubbo-admin是Dubbo的一个可视化管理工具，可以查看服务的发布和引用的情况。
 
 使用如下命令启动容器：
-```
+```bash
 docker run --name zookeeper-debug -p 2182:2181 -p 10000:8080 chaimm/zookeeper-dubbo:1.0
 ```
 - -p 2182:2181：将容器的2181端口映射到宿主机的2182端口上，该端口是ZooKeeper的端口号。
@@ -363,7 +363,7 @@ docker run --name zookeeper-debug -p 2182:2181 -p 10000:8080 chaimm/zookeeper-du
 ![title](https://leanote.com/api/file/getImage?fileId=5a1cff07ab64416ff3002053)
 
 ### 5.2 父pom文件中引入dubbo依赖
-```
+```xml
 <!-- Spring Boot Dubbo 依赖 -->
 <dependency>
 	<groupId>io.dubbo.springboot</groupId>
@@ -377,7 +377,7 @@ docker run --name zookeeper-debug -p 2182:2181 -p 10000:8080 chaimm/zookeeper-du
 
 - 在Gaoxi-Common-Service-Facade中定义UserService的接口<br>
 由于服务的发布和引用都依赖于接口，但服务的发布方和引用方在微服务架构中往往不在同一个系统中，所以需要将需要发布和引用的接口放在公共类库中，从而双方都能够引用。接口如下所示：
-```
+```java
 public interface UserService {
 
     public UserEntity login(LoginReq loginReq);
@@ -386,7 +386,7 @@ public interface UserService {
 
 - 在Gaoxi-User中定义接口的实现<br>
 在实现类上需要加上Dubbo的@Service注解，从而Dubbo会在项目启动的时候扫描到该注解，将它发布成一项RPC服务。
-```
+```java
 @Service(version = "1.0.0")
 public class UserServiceImpl implements UserService {
 
@@ -398,7 +398,7 @@ public class UserServiceImpl implements UserService {
 ```
 
 - 在Gaoxi-User的application.properties中配置服务提供者的信息
-```
+```properties
 spring.dubbo.application.name=user-provider # 本服务的名称
 spring.dubbo.registry.address=zookeeper://IP:2182 # ZooKeeper所在服务器的IP和端口号
 spring.dubbo.protocol.name=dubbo # RPC通信所采用的协议
@@ -414,7 +414,7 @@ spring.dubbo.scan=com.gaoxi.user.service # 服务实现类所在的路径
 
 - 声明需要引用的服务<br>
 引用服务非常简单，你只需要在引用的类中声明一项服务，然后用@Reference标识，如下所示：
-```
+```java
 @RestController
 public class UserControllerImpl implements UserController {
 
@@ -431,7 +431,7 @@ public class UserControllerImpl implements UserController {
 ```
 
 - 在Gaoxi-Controller的application.properties中配置服务消费者的信息
-```
+```properties
 spring.dubbo.application.name=controller-consumer # 本服务的名称
 spring.dubbo.registry.address=zookeeper://IP:2182 # zookeeper所在服务器的IP和端口号
 spring.dubbo.scan=com.gaoxi # 引用服务的路径
@@ -447,13 +447,13 @@ Jenkins采用Java开发，也需要Java环境，但我们使用Docker后，一�
 
 - 拉取镜像<br>
 这里我们使用Jenkins官方提供的镜像，大家只需执行如下命令拉取即可：
-```
+```bash
 docker pull docker.io/jenkins/jenkins
 ```
 
 - 启动容器<br>
 由于Jenkins运行在Tomcat容器中，因此我们将容器的8080端口映射到宿主机的10080端口上：
-```
+```bash
 docker run --name jenkins -p 10080:8080 docker.io/jenkins/jenkins
 ```
 
@@ -498,7 +498,7 @@ https://wiki.jenkins.io/display/JENKINS/Deploy+Plugin
 在系统管理–>插件管理–>高级上传deploy.hpi进行安装。
 
 - 在父项目的pom文件中增加远程部署插件：<br>
-```
+```xml
 <plugin>
 	<groupId>org.codehaus.cargo</groupId>
 	<artifactId>cargo-maven2-plugin</artifactId>
@@ -538,13 +538,13 @@ https://wiki.jenkins.io/display/JENKINS/Deploy+Plugin
 ![title](https://leanote.com/api/file/getImage?fileId=5a1d0fb5ab64416ff3002481)
     - WAR/EAR files：表示你需要发布的war包
     - Containers：配置目标Tomcat的用户名和密码
-    
+  
 ## 7. Maven的profile功能
 > 在实际开发中，我们的系统往往有多套环境构成，如：开发环境、测试环境、预发环境、生产环境。而不同环境的配置各不相同。如果我们只有一套配置，那么当系统从一个环境迁移到另一个环境的时候，就需要通过修改代码来更换配置，这样无疑增加了工作的复杂度，而且易于出错。但好在Maven提供了profile功能，能帮助我们解决这一个问题。
 
 - 父项目的pom中添加profile元素<br>
 首先，我们需要在总pom的中添加多套环境的信息，如下所示：
-```
+```xml
 <profiles>
 	<profile>
 		<id>dev</id>
@@ -572,7 +572,7 @@ https://wiki.jenkins.io/display/JENKINS/Deploy+Plugin
 
 - 父项目的pom中添加resource元素<br>
 resource标识了不同环境下需要打包哪些配置文件。
-```
+```xml
 <resources>
 	<resource>
 	    <!-- 标识配置文件所在的目录 -->
@@ -601,7 +601,7 @@ resource标识了不同环境下需要打包哪些配置文件。
 
 - 父项目的pom中添加插件maven-resources-plugin<br>
 该插件用来在Maven构建时参数替换
-```
+```xml
 <plugin>
 	<artifactId>maven-resources-plugin</artifactId>
 	<version>3.0.2</version>
@@ -619,7 +619,7 @@ resource标识了不同环境下需要打包哪些配置文件。
 ![title](https://leanote.com/api/file/getImage?fileId=5a1d14ddab64416dcc00261e)
 
 - 在application.properties中添加spring.profiles.active=@profileActive@
-```
+```properties
 spring.profiles.active=@profileActive@
 ```
 
@@ -638,7 +638,7 @@ spring.profiles.active=@profileActive@
 ### 8.2 开发登录服务
 首先需要在Gaoxi-Common-Service-Facade中创建UserService接口，并在其中声明登录的抽象函数。
 
-```
+```java
 public interface UserService {
 
     public UserEntity login(LoginReq loginReq);
@@ -650,7 +650,8 @@ public interface UserService {
 
 然后在Gaoxi-User中开发UserService的实现——UserServiceImpl。
 UserServiceImpl上必须要加上Dubbo的@Service注解，从而告诉Dubbo，在本项目初始化的时候需要将这个类发布成一项服务，供其他系统调用。
-```
+
+```java
 @Service(version = "1.0.0")
 @org.springframework.stereotype.Service
 public class UserServiceImpl implements UserService {
@@ -684,7 +685,8 @@ public class UserServiceImpl implements UserService {
 ### 8.3 引用登录服务
 当UserService开发完毕后，接下来Gaoxi-Controller需要引用该服务，并向前端提供一个登录的REST接口。
 若要使用userService中的函数，仅需要在userService上添加@Reference注解，然后就像调用本地函数一样使用userService即可。Dubbo会帮你找到UserService服务所在的IP和端口号，并发送调用请求。但这一切对于程序猿来说是完全透明的。
-```
+
+```java
 @RestController
 public class UserControllerImpl implements UserController {
     @Reference(version = "1.0.0")
