@@ -152,7 +152,7 @@
 				<configuration>
 					<container>
 						<!-- 指明使用的tomcat服务器版本 -->
-						<containerId>tomcat8x</containerId>
+						<containerId>tomcat9x</containerId>
 						<type>remote</type>
 					</container>
 					<configuration>
