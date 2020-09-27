@@ -1,7 +1,6 @@
 package com.gaoxi.controller.order;
 
 import com.gaoxi.annotation.Login;
-import com.gaoxi.annotation.Permission;
 import com.gaoxi.entity.order.OrdersEntity;
 import com.gaoxi.req.order.OrderInsertReq;
 import com.gaoxi.req.order.OrderQueryReq;
